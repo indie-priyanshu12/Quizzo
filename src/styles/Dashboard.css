@@ -1,0 +1,133 @@
+.dashboard-container {
+    color: #e0e0e0;
+    background: radial-gradient(circle at top, #1a233a, #0a0f1f);
+    min-height: 100vh;
+    padding: 0;
+}
+
+.dashboard-nav {
+    background-color: rgba(28, 42, 74, 0.95);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-nav h1 {
+    color: #6c9eff;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #e0e0e0;
+    font-size: 16px;
+}
+
+.account-icon {
+    font-size: 20px;
+}
+
+.quiz-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+    padding: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.quiz-card {
+    background-color: rgba(28, 42, 74, 0.95);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.quiz-card h3 {
+    color: #6c9eff;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.quiz-card button {
+    background-color: #6c9eff;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    width: 160px;
+}
+
+.quiz-card button:hover {
+    background-color: #4a7dcf;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 158, 255, 0.3);
+}
+
+.logout-btn {
+    background-color: rgba(255, 77, 77, 0.9);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 77, 77, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+}
+
+@media (max-width: 768px) {
+    .dashboard-nav {
+        padding: 15px 20px;
+        flex-direction: row;
+    }
+
+    .dashboard-nav h1 {
+        font-size: 20px;
+    }
+
+    .user-info span:not(.account-icon) {
+        display: none;
+    }
+
+    .quiz-list {
+        grid-template-columns: 1fr;
+        padding: 20px 10px;
+    }
+
+    .logout-btn {
+        padding: 6px 15px;
+        font-size: 13px;
+    }
+}

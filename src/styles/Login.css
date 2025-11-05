@@ -1,0 +1,151 @@
+/* ==========================================================================
+   Global styles
+   ========================================================================== */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0a0f1f;
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ==========================================================================
+   Login Container
+   ========================================================================== */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: radial-gradient(circle at top, #1a233a, #0a0f1f);
+}
+
+.login-logo {
+    width: 220px;
+    height: 165px;
+    margin-bottom: 0px;
+    transition: transform 0.3s ease;
+}
+
+.login-logo:hover {
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   Login Form
+   ========================================================================== */
+.login-form {
+    width: 100%;
+    max-width: 450px;
+    padding: 35px;
+    background-color: rgba(28, 42, 74, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Form Heading */
+.login-form h2 {
+    margin-bottom: 25px;
+    color: #6c9eff;
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* Form Elements */
+.login-form div {
+    margin-bottom: 20px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #d0d0d0;
+    font-size: 14px;
+}
+
+.login-form input {
+    width: 90%;
+    padding: 12px;
+    background-color: rgba(10, 15, 31, 0.7);
+    border: 1px solid #33415c;
+    border-radius: 12px;
+    color: #e0e0e0;
+    font-size: 14px;
+    transition: border 0.2s ease, background 0.2s ease;
+}
+
+.login-form input:focus {
+    background-color: rgba(26, 35, 58, 0.9);
+    border-color: #6c9eff;
+    outline: none;
+}
+
+/* Submit Button */
+.login-form button {
+    width: 160px;
+    padding: 12px;
+    margin: 15px auto 0;
+    background-color: #6c9eff;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.login-form button:hover {
+    background-color: #4a7dcf;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 158, 255, 0.3);
+}
+
+/* Signup Link */
+.signup-link {
+    margin-top: 15px;
+    text-align: center;
+    color: #d0d0d0;
+    font-size: 13px;
+}
+
+.signup-link a {
+    color: #6c9eff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.signup-link a:hover {
+    color: #4a7dcf;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 480px) {
+    .login-form {
+        padding: 25px 20px;
+    }
+
+    .login-form h2 {
+        font-size: 24px;
+    }
+
+    .login-logo {
+        width: 180px;
+        height: 135px;
+    }
+}

@@ -1,0 +1,201 @@
+/* ==========================================================================
+   Global styles inherited from Login.css
+   ========================================================================== */
+
+/* ==========================================================================
+   Signup Container
+   ========================================================================== */
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1a233a, #0a0f1f);
+    padding: 20px;
+}
+
+.signup-logo {
+    width: 180px;
+    height: 135px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.signup-logo:hover {
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   Signup Form
+   ========================================================================== */
+.signup-form {
+    width: 100%;
+    max-width: 450px;
+    padding: 35px;
+    background-color: rgba(28, 42, 74, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signup-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Form Heading */
+.signup-form h2 {
+    margin-bottom: 25px;
+    color: #6c9eff;
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* Form Elements */
+.signup-form div {
+    margin-bottom: 20px;
+}
+
+.signup-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #d0d0d0;
+    font-size: 14px;
+}
+
+.signup-form input[type="text"],
+.signup-form input[type="password"] {
+    width: 90%;
+    padding: 12px;
+    background-color: rgba(10, 15, 31, 0.7);
+    border: 1px solid #33415c;
+    border-radius: 12px;
+    color: #e0e0e0;
+    font-size: 14px;
+    transition: border 0.2s ease, background 0.2s ease;
+}
+
+.signup-form input[type="text"]:focus,
+.signup-form input[type="password"]:focus {
+    background-color: rgba(26, 35, 58, 0.9);
+    border-color: #6c9eff;
+    outline: none;
+}
+
+/* Error Styling */
+.signup-form .error {
+    color: #ff6b6b;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+.signup-form input.error {
+    border-color: #ff6b6b;
+}
+
+/* Role Selection */
+.role-selection {
+    margin-bottom: 25px;
+}
+
+.role-options {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.role-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background-color: rgba(10, 15, 31, 0.7);
+    border: 1px solid #33415c;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.role-option:hover {
+    background-color: rgba(26, 35, 58, 0.9);
+    border-color: #6c9eff;
+}
+
+.role-option input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.role-option span {
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+/* Submit Button */
+.signup-form button {
+    width: 160px;
+    padding: 12px;
+    margin: 10px auto 0;
+    background-color: #6c9eff;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.signup-form button:hover {
+    background-color: #4a7dcf;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 158, 255, 0.3);
+}
+
+/* Login Link */
+.login-link {
+    margin-top: 15px;
+    text-align: center;
+    color: #d0d0d0;
+    font-size: 13px;
+}
+
+.login-link a {
+    color: #6c9eff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.login-link a:hover {
+    color: #4a7dcf;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 480px) {
+    .signup-form {
+        padding: 25px 20px;
+    }
+
+    .signup-form h2 {
+        font-size: 24px;
+    }
+
+    .signup-logo {
+        width: 150px;
+        height: 112px;
+    }
+
+    .role-options {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
