@@ -1,10 +1,21 @@
 
 import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import '../styles/Dashboard.css';
 
 function Dashboard() {
   const [user, setUser] = useState("Utkarsh");
   const [quizzes, setQuizzes] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [redirect, setRedirect] = useState(false);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleLogout = () => {
+    setRedirect(true);
+  };
 
   useEffect(() => {
     setQuizzes([
@@ -15,16 +26,31 @@ function Dashboard() {
     ]);
   }, []);
 
+  if (redirect) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-nav">
         <h1>Quizzo</h1>
         <div className="user-controls">
-          <div className="user-info">
+          <div className="user-info" onClick={toggleDropdown}>
             <span className="account-icon">👤</span>
             <span>{user}</span>
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <div className="dropdown-item">
+                  <span className="dropdown-icon">👤</span>
+                  Profile
+                </div>
+                <div className="dropdown-item" onClick={handleLogout}>
+                  <span className="dropdown-icon">🚪</span>
+                  Logout
+                </div>
+              </div>
+            )}
           </div>
-          <button className="logout-btn">Logout</button>
         </div>
       </div>
 
