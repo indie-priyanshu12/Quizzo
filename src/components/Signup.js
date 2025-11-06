@@ -74,24 +74,62 @@ const Signup = () => {
         
         if (validateForm()) {
             try {
-                // Here you would typically make an API call to register the user
-                console.log('Form submitted:', formData);
-                // Simulate successful registration
-                // TODO: Replace with actual API call
-                setTimeout(() => {
-                    navigate('/login');
-                }, 1000);
-            } catch (error) {
-                setErrors({
-                    submit: 'Failed to create account. Please try again.'
+                // Log the data being sent
+                const requestData = {
+                    username: formData.username,
+                    email: formData.name, // Using name field as email for now
+                    password: formData.password,
+                    role: formData.role
+                };
+                console.log('Sending signup request to server:', requestData);
+
+                const response = await fetch('http://localhost:5000/api/users/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(requestData),
                 });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (response.ok) {
+                    console.log('Registration successful:', data);
+                    // Show success message before redirecting
+                    alert('Registration successful! Redirecting to login...');
+                    navigate('/');
+                } else {
+                    console.error('Server returned error:', data);
+                    setErrors({
+                        submit: data.message || 'Failed to create account. Please try again.'
+                    });
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                // Check if it's a network error
+                if (!window.navigator.onLine) {
+                    setErrors({
+                        submit: 'Network error. Please check your internet connection.'
+                    });
+                } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    setErrors({
+                        submit: 'Could not connect to the server. Please make sure the backend server is running.'
+                    });
+                } else {
+                    setErrors({
+                        submit: 'Failed to create account. Please try again.'
+                    });
+                }
             }
         }
     };
 
     return (
         <div className="signup-container">
-            <img src="/logo.png" alt="Quizzo Logo" className="signup-logo" />
+            <img src="/logo.png" alt="Quizzo Logo" className="signup-logo" onClick={() => <Link to="/"></Link>}/>
             
             <form className="signup-form" onSubmit={handleSubmit}>
                 <h2>Create Account</h2>
@@ -180,7 +218,7 @@ const Signup = () => {
                 </p>
             </form>
         </div>
-    );
+    );  
 };
 
 export default Signup;

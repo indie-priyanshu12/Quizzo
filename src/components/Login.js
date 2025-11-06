@@ -3,15 +3,37 @@ import { Link, Navigate } from 'react-router-dom';
 import '../styles/Login.css';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Add your login logic here
-        console.log('Login attempted with:', email);
-        setRedirect(true);
+
+        const payload = { username: (username || '').trim().toLowerCase(), password };
+
+        console.log('Login payload:', payload);
+
+        try {
+            const res = await fetch('http://localhost:5000/api/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json().catch(() => ({}));
+            console.log('Login response:', res.status, data);
+
+            if (!res.ok) {
+                alert(data.message || 'Login failed');
+                return;
+            }
+
+            setRedirect(true);
+        } catch (err) {
+            console.error('Login error', err);
+            alert('Login error');
+        }
     };
 
     if (redirect) {
@@ -20,20 +42,22 @@ const Login = () => {
 
     return (
         <div className="login-container">
-            <img src="/logo.png" alt="Quizzo Logo" className="login-logo" />
-            
+            <Link to="/signup">
+                <img src="/logo.png" alt="Quizzo Logo" className="login-logo" />
+            </Link>
+
             <form className="login-form" onSubmit={handleSubmit}>
                 <h2>Welcome Back!</h2>
-                
+
                 <div>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="username">Username</label>
                     <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         required
-                        placeholder="Enter your email"
+                        placeholder="Enter your username"
                     />
                 </div>
 
