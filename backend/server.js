@@ -53,8 +53,10 @@ db.once('open', () => console.log('MongoDB connection established'));
 db.on('disconnected', () => console.log('MongoDB disconnected'));
 
 const userRoutes = require('./routes/userRoutes');
+const quizRoutes = require('./routes/quizRoutes');
 
 app.use('/api/users', userRoutes);
+app.use('/api/quizzes', quizRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

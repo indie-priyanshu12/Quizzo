@@ -131,8 +131,26 @@
 }
 
 .role-option span {
+    color: #1e1d1d;
+    font-size: 14px;
+}
+
+/* Role Dropdown */
+.role-dropdown {
+     width: 97%;
+    padding: 12px;
+    background-color: rgba(10, 15, 31, 0.7);
+    border: 1px solid #33415c;
+    border-radius: 12px;
     color: #e0e0e0;
     font-size: 14px;
+    transition: border 0.2s ease, background 0.2s ease;
+}
+
+.role-dropdown:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
 
 /* Submit Button */

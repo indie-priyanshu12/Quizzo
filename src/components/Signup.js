@@ -15,15 +15,17 @@ const Signup = () => {
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
+        const { name, value } = e.target;
+        console.log('Form field changed:', name, value); // Debug log
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: value
         });
         // Clear error for the field being changed
-        if (errors[e.target.name]) {
+        if (errors[name]) {
             setErrors({
                 ...errors,
-                [e.target.name]: ''
+                [name]: ''
             });
         }
     };
@@ -74,55 +76,45 @@ const Signup = () => {
         
         if (validateForm()) {
             try {
-                // Log the data being sent
                 const requestData = {
-                    username: formData.username,
-                    email: formData.name, // Using name field as email for now
+                    username: formData.username.trim().toLowerCase(),
+                    fullName: formData.name,
                     password: formData.password,
                     role: formData.role
                 };
-                console.log('Sending signup request to server:', requestData);
+                console.log('Signup request data:', requestData); // Debug log
 
                 const response = await fetch('http://localhost:5000/api/users/signup', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(requestData),
                 });
 
-                console.log('Response status:', response.status);
                 const data = await response.json();
-                console.log('Response data:', data);
+                console.log('Signup response:', data);
 
                 if (response.ok) {
-                    console.log('Registration successful:', data);
-                    // Show success message before redirecting
-                    alert('Registration successful! Redirecting to login...');
+                    // Store complete user data including role
+                    localStorage.setItem('userData', JSON.stringify({
+                        username: requestData.username,
+                        fullName: requestData.fullName,
+                        role: requestData.role // Ensure role is stored
+                    }));
+                    alert(`Registration successful as ${requestData.role}! Redirecting to login...`);
                     navigate('/');
                 } else {
                     console.error('Server returned error:', data);
                     setErrors({
-                        submit: data.message || 'Failed to create account. Please try again.'
+                        submit: data.message || 'Failed to create account'
                     });
                 }
             } catch (error) {
-                console.error('Registration error:', error);
-                // Check if it's a network error
-                if (!window.navigator.onLine) {
-                    setErrors({
-                        submit: 'Network error. Please check your internet connection.'
-                    });
-                } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-                    setErrors({
-                        submit: 'Could not connect to the server. Please make sure the backend server is running.'
-                    });
-                } else {
-                    setErrors({
-                        submit: 'Failed to create account. Please try again.'
-                    });
-                }
+                console.error('Signup error:', error);
+                setErrors({
+                    submit: 'Failed to create account'
+                });
             }
         }
     };
@@ -187,29 +179,17 @@ const Signup = () => {
                 </div>
 
                 <div className="role-selection">
-                    <label>Select Role</label>
-                    <div className="role-options">
-                        <label className="role-option">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="student"
-                                checked={formData.role === 'student'}
-                                onChange={handleChange}
-                            />
-                            <span>Student</span>
-                        </label>
-                        <label className="role-option">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="instructor"
-                                checked={formData.role === 'instructor'}
-                                onChange={handleChange}
-                            />
-                            <span>Instructor</span>
-                        </label>
-                    </div>
+                    <label htmlFor="role">Select Role</label>
+                    <select
+                        id="role"
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                        className="role-dropdown"
+                    >
+                        <option value="student">Student</option>
+                        <option value="instructor">Instructor</option>
+                    </select>
                 </div>
 
                 <button type="submit">Sign Up</button>

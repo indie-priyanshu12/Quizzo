@@ -6,38 +6,71 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
+    const [role, setRole] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const payload = { username: (username || '').trim().toLowerCase(), password };
 
-        console.log('Login payload:', payload);
-
         try {
-            const res = await fetch('http://localhost:5000/api/users/login', {
+            // First, verify user exists and get role
+            const checkUserRes = await fetch(`http://localhost:5000/api/users/check/${payload.username}`);
+            const userData = await checkUserRes.json();
+            
+            if (!checkUserRes.ok || !userData) {
+                alert('User not found');
+                return;
+            }
+
+            console.log('Found user data:', userData);
+
+            // Now proceed with login
+            const loginRes = await fetch('http://localhost:5000/api/users/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            const data = await res.json().catch(() => ({}));
-            console.log('Login response:', res.status, data);
+            const loginData = await loginRes.json();
+            console.log('Login response:', loginData);
 
-            if (!res.ok) {
-                alert(data.message || 'Login failed');
+            if (!loginRes.ok) {
+                alert(loginData.message || 'Login failed');
                 return;
             }
 
+            // Use role from MongoDB user data
+            const userRole = userData.role;
+            console.log('Using MongoDB role:', userRole);
+
+            if (!userRole) {
+                console.error('No role found for user:', userData);
+                alert('Error: User role not found');
+                return;
+            }
+
+            setRole(userRole);
+            localStorage.setItem('userData', JSON.stringify({
+                id: loginData.user.id,
+                username: loginData.user.username,
+                fullName: loginData.user.fullName,
+                role: userRole,
+                token: loginData.token
+            }));
+
             setRedirect(true);
         } catch (err) {
-            console.error('Login error', err);
-            alert('Login error');
+            console.error('Login error:', err);
+            alert('Login error: ' + (err.message || 'Unknown error'));
         }
     };
 
-    if (redirect) {
-        return <Navigate to="/dashboard" />;
+    // Simplified redirect using only server-provided role
+    if (redirect && role) {
+        console.log('Redirecting with role:', role);
+        return role === 'instructor' 
+            ? <Navigate to="/admindashboard" />
+            : <Navigate to="/dashboard" />;
     }
 
     return (

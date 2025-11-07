@@ -18,33 +18,39 @@
 .admin-tabs button {
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
-  background: #fff;
+  background: #007bff;
+  color: #ffffff;
+  transition: all 0.2s ease;
 }
 
 .admin-tabs button.active {
-  background: #007bff;
+  background: #004a99;
   color: white;
+  padding: 12px 22px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transform: scale(1.02);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: rgb(88, 88, 88);
+  background: #1c2a4af2;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(69, 69, 69, 0.1);
+  color: #d6f6fd;
 }
 
 th, td {
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #131313;
 }
 
 th {
-  background-color: #454545;
+  background-color: #04285e;
   font-weight: 600;
 }
 

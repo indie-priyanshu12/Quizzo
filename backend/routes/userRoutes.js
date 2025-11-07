@@ -8,18 +8,20 @@ const router = express.Router();
 // POST /api/users/signup
 router.post('/signup', async (req, res) => {
   try {
-    const { username, fullName, password } = req.body;
+    const { username, fullName, password, role } = req.body;
     
-    // Normalize data exactly as we'll need it for login
+    // Normalize data including role
     const normalizedUser = {
       username: (username || '').trim().toLowerCase(),
       fullName: (fullName || '').trim(),
-      password: password // don't trim password, keep it exact
+      password: password, // don't trim password
+      role: role || 'student' // default to student if no role provided
     };
 
     console.log('Signup normalized data:', { 
       username: normalizedUser.username,
       fullName: normalizedUser.fullName,
+      role: normalizedUser.role,
       passwordLength: normalizedUser.password.length
     });
 
@@ -34,20 +36,23 @@ router.post('/signup', async (req, res) => {
     const user = new User({
       username: normalizedUser.username,
       fullName: normalizedUser.fullName,
-      passwordHash
+      passwordHash,
+      role: normalizedUser.role // Include role when creating user
     });
 
     const saved = await user.save();
     console.log('Saved user:', {
       id: saved._id.toString(),
       username: saved.username,
+      role: saved.role,
       passwordHashLength: saved.passwordHash.length
     });
 
     return res.status(201).json({
       id: saved._id,
       username: saved.username,
-      fullName: saved.fullName
+      fullName: saved.fullName,
+      role: saved.role // Include role in response
     });
   } catch (err) {
     console.error('Signup error:', err);
@@ -113,6 +118,24 @@ router.post('/login', async (req, res) => {
     console.error('Login error:', err);
     return res.status(500).json({ message: 'Server error' });
   }
+});
+
+// Add new route to check user role
+router.get('/check/:username', async (req, res) => {
+    try {
+        const user = await User.findOne({ 
+            username: req.params.username.toLowerCase() 
+        }).select('username role');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.json({ username: user.username, role: user.role });
+    } catch (err) {
+        console.error('User check error:', err);
+        return res.status(500).json({ message: 'Server error' });
+    }
 });
 
 module.exports = router;
