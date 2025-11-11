@@ -118,15 +118,9 @@ npm start
 ## Contributors
 | Name | Role |
 |------|------|
-| Utkarsh Kashyap | Full Stack Developer |
-| Ashu Kumar | Project Collaborator |
+| Utkarsh Kashyap - 23BCG10009 | Full Stack Developer |
+| Siddharth Sonawane - 23BCG10016 | Full Stack Developer |
 
 ---
 
-## License
-This project is licensed under the **MIT License**.  
-You are free to use, modify, and distribute this software with proper attribution.
-
----
-
-© 2025 Quizzo – Adaptive Learning and Quiz Platform
+© 2025 Quizzo – Adaptive Learning and Quiz Platform by 23BCG10009 and 23BCG10016
