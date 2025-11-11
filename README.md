@@ -118,7 +118,7 @@ npm start
 ## Contributors
 | Name | Role |
 |------|------|
-| Utkarsh Kashyap - 23BCG10009 | Full Stack Developer |
+| Priyanshu Kashyap - 23BCG10009 | Full Stack Developer |
 | Siddharth Sonawane - 23BCG10016 | Full Stack Developer |
 
 ---
