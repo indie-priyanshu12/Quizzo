@@ -138,4 +138,114 @@ router.get('/check/:username', async (req, res) => {
     }
 });
 
+// POST /api/users/:username/attempts
+router.post('/:username/attempts', async (req, res) => {
+  try {
+    const username = (req.params.username || '').toLowerCase();
+    const { quizTitle, quizId, score, totalQuestions, percentage } = req.body;
+
+    if (!username || typeof score !== 'number' || typeof totalQuestions !== 'number') {
+      return res.status(400).json({ message: 'Invalid attempt payload' });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const attempt = {
+      quizTitle: quizTitle || 'Unknown Quiz',
+      quizId: quizId || '',
+      score,
+      totalQuestions,
+      percentage: typeof percentage === 'number' ? percentage : Math.round((score / totalQuestions) * 100),
+      takenAt: new Date()
+    };
+
+    user.attempts.push(attempt);
+    await user.save();
+
+    return res.status(201).json({ message: 'Attempt recorded', attempt });
+  } catch (err) {
+    console.error('Record attempt error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/users/analytics/:username
+router.get('/analytics/:username', async (req, res) => {
+  try {
+    const username = (req.params.username || '').toLowerCase();
+    const user = await User.findOne({ username }).select('attempts');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const attempts = user.attempts || [];
+    const totalQuizzes = attempts.length;
+
+    // overall average
+    const averageScore = totalQuizzes === 0 ? 0 : Math.round((attempts.reduce((s, a) => s + a.percentage, 0) / totalQuizzes) * 100) / 100;
+
+    // best performance
+    let bestPerformance = null;
+    if (attempts.length > 0) {
+      const best = attempts.reduce((prev, curr) => (curr.percentage > prev.percentage ? curr : prev), attempts[0]);
+      bestPerformance = `${best.quizTitle} (${best.percentage}%)`;
+    }
+
+    // recent scores: last 5 attempts sorted by takenAt desc
+    const recentScores = attempts
+      .slice()
+      .sort((a, b) => new Date(b.takenAt) - new Date(a.takenAt))
+      .slice(0, 5)
+      .map(a => ({ quiz: a.quizTitle, score: `${a.percentage}%`, date: a.takenAt }));
+
+    // per-quiz averages
+    const perQuiz = {};
+    attempts.forEach(a => {
+      const key = a.quizTitle || 'Unknown';
+      if (!perQuiz[key]) perQuiz[key] = { total: 0, count: 0 };
+      perQuiz[key].total += a.percentage;
+      perQuiz[key].count += 1;
+    });
+    const perQuizAverages = {};
+    Object.keys(perQuiz).forEach(k => {
+      perQuizAverages[k] = {
+        average: Math.round((perQuiz[k].total / perQuiz[k].count) * 100) / 100,
+        attempts: perQuiz[k].count
+      };
+    });
+
+    return res.json({ totalQuizzes, averageScore, bestPerformance, recentScores, perQuizAverages });
+  } catch (err) {
+    console.error('Analytics error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/users/all-stats - Get all users with their statistics
+router.get('/all-stats', async (req, res) => {
+  try {
+    const users = await User.find().select('username fullName attempts role');
+
+    const userStats = users.map(user => {
+      const attempts = user.attempts || [];
+      const totalQuizzes = attempts.length;
+      const averageScore = totalQuizzes === 0 ? 0 : Math.round((attempts.reduce((s, a) => s + a.percentage, 0) / totalQuizzes) * 100) / 100;
+
+      return {
+        id: user._id.toString(),
+        username: user.username,
+        fullName: user.fullName,
+        quizzesTaken: totalQuizzes,
+        avgScore: averageScore,
+        role: user.role,
+        lastAttempt: attempts.length > 0 ? new Date(Math.max(...attempts.map(a => new Date(a.takenAt)))) : null
+      };
+    });
+
+    return res.json(userStats);
+  } catch (err) {
+    console.error('All stats error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
