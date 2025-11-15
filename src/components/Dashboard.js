@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import '../styles/Dashboard.css';
+import GeminiChat from './GeminiChat';
 
 function Dashboard() {
-  const [user, setUser] = useState("Utkarsh");
+  const [user, setUser] = useState("");
   const [quizzes, setQuizzes] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [analytics, setAnalytics] = useState({
-    totalQuizzes: 12,
-    averageScore: 78,
-    recentScores: [
-      { quiz: "JavaScript Basics", score: 85, date: "2024-02-10" },
-      { quiz: "React Components", score: 92, date: "2024-02-08" },
-      { quiz: "Node.js Intro", score: 78, date: "2024-02-05" },
-    ],
-    topPerformance: "React Components (92%)"
+    totalQuizzes: 0,
+    averageScore: 0,
+    bestPerformance: null,
+    recentScores: []
   });
   const navigate = useNavigate();
 
@@ -28,18 +25,88 @@ function Dashboard() {
   };
 
   const handleStartQuiz = (title) => {
-    if (title === "General Knowledge") {
-      navigate('/quiz');
+    // store chosen quiz so the Quiz page knows which question set to load
+    try {
+      localStorage.setItem('selectedQuiz', title);
+    } catch (err) {
+      console.error('Could not store selected quiz:', err);
     }
+    navigate('/quiz');
   };
 
   useEffect(() => {
-    setQuizzes([
-      { id: 1, title: "General Knowledge", questions: 10, difficulty: "Easy" },
-      { id: 2, title: "Science Facts", questions: 8, difficulty: "Medium" },
-      { id: 3, title: "Technology", questions: 12, difficulty: "Hard" },
-      { id: 4, title: "Mathematics", questions: 15, difficulty: "Medium" },
-    ]);
+      // Fetch quizzes from backend first, then fallback to default
+      const fetchQuizzes = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/quizzes/collections');
+          if (response.ok) {
+            const backendQuizzes = await response.json();
+            // Combine with default quizzes, add backend quizzes
+            const defaultQuizzes = [
+              { id: 1, title: "General Knowledge", questions: 6, difficulty: "" },
+              { id: 2, title: "Science Facts", questions: 6, difficulty: "" },
+              { id: 3, title: "Technology", questions: 6, difficulty: "" },
+              { id: 4, title: "Mathematics", questions: 6, difficulty: "" },
+            ];
+            
+            // Add backend quizzes that aren't in defaults
+            const allQuizzes = [...defaultQuizzes];
+            backendQuizzes.forEach(bq => {
+              if (!allQuizzes.find(q => q.title === bq.title)) {
+                allQuizzes.push({
+                  id: allQuizzes.length + 1,
+                  title: bq.title,
+                  questions: 18,
+                  difficulty: "",
+                  description: bq.description
+                });
+              }
+            });
+            
+            setQuizzes(allQuizzes);
+            return;
+          }
+        } catch (err) {
+          console.error('Error fetching backend quizzes:', err);
+        }
+
+        // Fallback to default quizzes if backend fails
+        setQuizzes([
+          { id: 1, title: "General Knowledge", questions: 6, difficulty: "" },
+          { id: 2, title: "Science Facts", questions: 6, difficulty: "" },
+          { id: 3, title: "Technology", questions: 6, difficulty: "" },
+          { id: 4, title: "Mathematics", questions: 6, difficulty: "" },
+        ]);
+      };
+
+      fetchQuizzes();
+
+    // fetch analytics for current user
+    const raw = localStorage.getItem('userData');
+    if (!raw) return;
+    try {
+      const ud = JSON.parse(raw);
+      setUser(ud.fullName || ud.username || 'User');
+      const username = ud.username;
+      if (!username) return;
+
+      fetch(`http://localhost:5000/api/users/analytics/${encodeURIComponent(username)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && !data.message) {
+            setAnalytics({
+              totalQuizzes: data.totalQuizzes || 0,
+              averageScore: data.averageScore || 0,
+              bestPerformance: data.bestPerformance || null,
+              recentScores: data.recentScores || [],
+              perQuizAverages: data.perQuizAverages || {}
+            });
+          }
+        })
+        .catch(err => console.error('Error fetching analytics:', err));
+    } catch (err) {
+      console.error('Error parsing userData:', err);
+    }
   }, []);
 
   if (redirect) {
@@ -76,7 +143,8 @@ function Dashboard() {
             <div className="quiz-card" key={q.id}>
               <h3>{q.title}</h3>
               <p>Questions: {q.questions}</p>
-              <p>Difficulty: {q.difficulty}</p>
+              <p>Starting Difficulty: <span style={{ fontWeight: 600, color: '#6c9eff' }}>Easy</span></p>
+              <p style={{ marginTop: 8, fontWeight: 600 }}>Average: {analytics.perQuizAverages && analytics.perQuizAverages[q.title] ? `${analytics.perQuizAverages[q.title].average}% (${analytics.perQuizAverages[q.title].attempts} attempts)` : '-'}</p>
               <button onClick={() => handleStartQuiz(q.title)}>Start Quiz</button>
             </div>
           ))}
@@ -95,7 +163,7 @@ function Dashboard() {
             </div>
             <div className="analytics-item">
               <span className="analytics-label">Best Performance</span>
-              <span className="analytics-value">{analytics.topPerformance}</span>
+              <span className="analytics-value">{analytics.bestPerformance || '-'}</span>
             </div>
           </div>
 
@@ -104,13 +172,14 @@ function Dashboard() {
             {analytics.recentScores.map((score, index) => (
               <div key={index} className="score-item">
                 <span className="quiz-name">{score.quiz}</span>
-                <span className="quiz-score">{score.score}%</span>
-                <span className="quiz-date">{score.date}</span>
+                <span className="quiz-score">{score.score}</span>
+                <span className="quiz-date">{new Date(score.date).toLocaleString()}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
+      <GeminiChat />
     </div>
   );
 }
