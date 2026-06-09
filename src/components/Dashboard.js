@@ -38,7 +38,7 @@ function Dashboard() {
       // Fetch quizzes from backend first, then fallback to default
       const fetchQuizzes = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/quizzes/collections');
+          const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections`);
           if (response.ok) {
             const backendQuizzes = await response.json();
             // Combine with default quizzes, add backend quizzes
@@ -90,7 +90,7 @@ function Dashboard() {
       const username = ud.username;
       if (!username) return;
 
-      fetch(`http://localhost:5000/api/users/analytics/${encodeURIComponent(username)}`)
+      fetch(`${process.env.REACT_APP_API_URL || ''}/api/users/analytics/${encodeURIComponent(username)}`)
         .then(res => res.json())
         .then(data => {
           if (data && !data.message) {

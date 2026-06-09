@@ -29,7 +29,7 @@ function AdminDashboard() {
         // First fetch from backend/collections
         let backendQuizzes = [];
         try {
-          const response = await fetch('http://localhost:5000/api/quizzes/collections');
+          const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections`);
           if (response.ok) {
             backendQuizzes = await response.json();
           }
@@ -68,7 +68,7 @@ function AdminDashboard() {
             
             // Fetch analytics for current user
             const response = await fetch(
-              `http://localhost:5000/api/users/analytics/${encodeURIComponent(currentUser.username)}`
+              `${process.env.REACT_APP_API_URL || ''}/api/users/analytics/${encodeURIComponent(currentUser.username)}`
             );
             if (response.ok) {
               const analyticsData = await response.json();
@@ -118,7 +118,7 @@ function AdminDashboard() {
 
         // Fetch all users statistics from backend
         try {
-          const response = await fetch('http://localhost:5000/api/users/all-stats');
+          const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/users/all-stats`);
           if (response.ok) {
             const userStats = await response.json();
             setUsers(userStats);
@@ -168,7 +168,7 @@ function AdminDashboard() {
 
     if (window.confirm(`Are you sure you want to delete "${quizToDelete.title}"?`)) {
       try {
-        const response = await fetch(`http://localhost:5000/api/quizzes/collections/${encodeURIComponent(quizToDelete.title)}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections/${encodeURIComponent(quizToDelete.title)}`, {
           method: 'DELETE'
         });
 
@@ -190,7 +190,7 @@ function AdminDashboard() {
     
     // Try to load from backend first
     try {
-      const response = await fetch(`http://localhost:5000/api/quizzes/collections/${encodeURIComponent(quiz.title)}`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections/${encodeURIComponent(quiz.title)}`);
       if (response.ok) {
         const quizData = await response.json();
         const questions = quizData.questions || { easy: [], medium: [], hard: [] };
@@ -223,7 +223,7 @@ function AdminDashboard() {
     try {
       // Save to backend
       const response = await fetch(
-        `http://localhost:5000/api/quizzes/collections/${encodeURIComponent(selectedQuizForQuestions.title)}`,
+        `${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections/${encodeURIComponent(selectedQuizForQuestions.title)}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -306,7 +306,7 @@ function AdminDashboard() {
     const blankQuestions = createBlankQuestionSet();
 
     try {
-      const response = await fetch('http://localhost:5000/api/quizzes/collections', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -329,7 +329,7 @@ function AdminDashboard() {
         // Refetch quizzes list without page reload
         try {
           let backendQuizzes = [];
-          const response = await fetch('http://localhost:5000/api/quizzes/collections');
+          const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections`);
           if (response.ok) {
             backendQuizzes = await response.json();
           }

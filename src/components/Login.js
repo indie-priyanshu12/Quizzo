@@ -14,7 +14,7 @@ const Login = () => {
 
         try {
             // First, verify user exists and get role
-            const checkUserRes = await fetch(`http://localhost:5000/api/users/check/${payload.username}`);
+            const checkUserRes = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/users/check/${payload.username}`);
             const userData = await checkUserRes.json();
             
             if (!checkUserRes.ok || !userData) {
@@ -25,7 +25,7 @@ const Login = () => {
             console.log('Found user data:', userData);
 
             // Now proceed with login
-            const loginRes = await fetch('http://localhost:5000/api/users/login', {
+            const loginRes = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

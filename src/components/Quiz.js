@@ -182,7 +182,7 @@ function Quiz() {
 
       // Try backend
       try {
-        const response = await fetch(`http://localhost:5000/api/quizzes/collections/${encodeURIComponent(selectedQuizTitle)}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/quizzes/collections/${encodeURIComponent(selectedQuizTitle)}`);
         if (response.ok) {
           const quizResult = await response.json();
           if (quizResult.questions && quizResult.questions[currentDifficulty] && quizResult.questions[currentDifficulty].length > 0) {
@@ -255,7 +255,7 @@ function Quiz() {
               percentage: Math.round((score / quizData.length) * 100)
             };
 
-        await fetch(`http://localhost:5000/api/users/${encodeURIComponent(username)}/attempts`, {
+        await fetch(`${process.env.REACT_APP_API_URL || ''}/api/users/${encodeURIComponent(username)}/attempts`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
