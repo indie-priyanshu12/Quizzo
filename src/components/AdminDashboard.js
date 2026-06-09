@@ -16,7 +16,7 @@ function AdminDashboard() {
   const [error, setError] = useState('');
   const [showQuestionsModal, setShowQuestionsModal] = useState(false);
   const [selectedQuizForQuestions, setSelectedQuizForQuestions] = useState(null);
-  const [questionsData, setQuestionsData] = useState({});
+
   const [users, setUsers] = useState([]);
   const [editedQuestions, setEditedQuestions] = useState({});
   const [createFormData, setCreateFormData] = useState({ title: '', description: '' });
@@ -194,7 +194,6 @@ function AdminDashboard() {
       if (response.ok) {
         const quizData = await response.json();
         const questions = quizData.questions || { easy: [], medium: [], hard: [] };
-        setQuestionsData(questions);
         setEditedQuestions(JSON.parse(JSON.stringify(questions)));
         setShowQuestionsModal(true);
         return;
@@ -205,13 +204,11 @@ function AdminDashboard() {
 
     // Fallback to QUIZ_SETS
     if (QUIZ_SETS[quiz.title]) {
-      setQuestionsData(QUIZ_SETS[quiz.title]);
       setEditedQuestions(JSON.parse(JSON.stringify(QUIZ_SETS[quiz.title])));
       setShowQuestionsModal(true);
     } else {
       // If quiz not found anywhere, create empty structure
       const emptyQuestions = { easy: [], medium: [], hard: [] };
-      setQuestionsData(emptyQuestions);
       setEditedQuestions(JSON.parse(JSON.stringify(emptyQuestions)));
       setShowQuestionsModal(true);
     }
@@ -317,7 +314,7 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         alert(`Quiz "${createFormData.title}" created successfully!`);
         
         // Add to QUIZ_SETS in memory

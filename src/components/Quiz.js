@@ -268,7 +268,7 @@ function Quiz() {
     };
 
     postAttempt();
-  }, [showScore, attemptPosted, score]);
+  }, [showScore, attemptPosted, score, currentDifficulty, quizData.length, selectedQuizTitle]);
 
   const handleAnswerSelect = (answer) => {
     if (showExplanation) return; // Prevent multiple selections
